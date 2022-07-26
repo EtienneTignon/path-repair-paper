@@ -6,7 +6,7 @@ Given a pair of acyclic path $(p_1,p_2)$ we can define intersections called "pse
 \begin{itemize}
   \item There is a "vertex pseudo-conflict" $(a_1,a_2,v)$ if $v \in a_1$ and $v \in a_2$.
 %  \item There is a "edge pseudo-conflict" $(a_1,a_2,v,v')$ if $(v,v') \in a_1$ and $(v,v') \in a_2$.
-  \item There is a "swap pseudo-conflict" $(a_1,a_2,v,v')$ if $(v,v') \in a_1$ and $(v',v) \in a_2$.
+  \item There is a "edge pseudo-conflict" $(a_1,a_2,v,v')$ if $(v,v') \in a_1$ and $(v',v) \in a_2$.
 \end{itemize}
 
 Given a plan\comment{Not any plan. Check the necessary properties.} $\pi$, you can define the associated path $p$. For simplicity, we can talk about the pseudo-conflict of plans to refer to the pseudo-conflicts of their paths.
@@ -27,19 +27,19 @@ Given a set of shortest path\footnote{Acyclic path is enough.} $S = \{sp_a | a \
 We can represent a solution for $I$ using the set $S$ with a constraint graph $G_C=(V_C,E_C).$
 \begin{itemize}
   \item $V_C = \{action(a,e) | sp_a \in S, e \in sp_a \}$
-  \item $E_C = C_s \cup C_{ep} \cup C_{vp}$
+  \item $E_C = E_s \cup E_{C-ep} \cup E_{C-vp}$
 \end{itemize}
 The vertices of the graph represents the actions the agents have to execute.\footnote{Note that no "wait" action is present. We considers an agent may not do an action in all time-step. Not doing an action at T is equivalent with waiting at T.}
 The edges represents the constraints between the time-points of two actions. $SE$ contains the edges that represent the succession of actions for each agent. $CE$ represent the edges
 
 \begin{itemize}
-  \item For every succeeding edges $(v1,v2),(v2,v3)$ in $sp_a$, we add in $C_s$ the edge $(action(a,(v1,v2)),action(a,(v2,v3)),-1)$ is in $SE$.
-  \item For every vertex pseudo-conflict $(a_1,a_2,v)$ in $S$, we must add one of the following edge in $C_{vp}$:
+  \item For every succeeding edges $(v1,v2),(v2,v3)$ in $sp_a$, we add in $E_s$ the edge $(action(a,(v1,v2)),action(a,(v2,v3)),-1)$ is in $SE$.
+  \item For every vertex pseudo-conflict $(a_1,a_2,v)$ in $S$, we must add one of the following edge in $E_{C-vp}$:
   \begin{itemize}
     \item $(action(a_1,(v,v')),action(a_2,(v'',v)),0)$\comment{Add that the actions must be from thoses that allready exist}
     \item $(action(a_2,(v,v')),action(a_1,(v'',v)),0)$
   \end{itemize}
-  \item For every swap pseudo-conflict $(a_1,a_2,v,v')$ in $S$, we must add one of the following edge in $C_{ep}$:
+  \item For every edge pseudo-conflict $(a_1,a_2,v,v')$ in $S$, we must add one of the following edge in $E_{C-ep}$:
   \begin{itemize}
     \item $(action(a_1,(v,v')),action(a_2,(v',v)),-1)$
     \item $(action(a_2,(v',v)),action(a_1,(v,v')),-1)$
