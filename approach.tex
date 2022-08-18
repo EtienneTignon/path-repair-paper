@@ -1,4 +1,4 @@
-\section{Approach}\label{sec:approach}
+\section{Pseudo-conflict's approach}\label{sec:approach}
 
 \subsection{Repair and pseudo conflict}
 Given a pair of acyclic path $(p_1,p_2)$ we can define intersections called "pseudo-conflicts".
@@ -9,18 +9,20 @@ Given a pair of acyclic path $(p_1,p_2)$ we can define intersections called "pse
   \item There is a "edge pseudo-conflict" $(a_1,a_2,v,v')$ if $(v,v') \in a_1$ and $(v',v) \in a_2$.
 \end{itemize}
 
-Given a plan\comment{Not any plan. Check the necessary properties.} $\pi$, you can define the associated path $p$. For simplicity, we can talk about the pseudo-conflict of plans to refer to the pseudo-conflicts of their paths.
+Given a stroll $\pi$, you can define the associated path $p$. For simplicity, we can talk about the pseudo-conflict of stroll to refer to the pseudo-conflicts of their paths.
+
+From now on, the stroll will be called plan.
 
 If two plans have a conflict, their respective paths have the corresponding pseudo-conflict. The opposite is not true. For example, two plans taking the same action at different time does not have a conflict on this action, but the respective paths will have an edge pseudo-conflict.
 
 Given a set of plans, we can define a "repaired set of plan" as follow:
 \begin{itemize}
   \item The repaired set of plan does not have pseudo-conflict not present in the original set.\footnote{Before I forgot: if I forbid vertex pseudo-conflict, the other one may be avoided as well.}
-  \item For each pseudo-conflict, we forbid the corresponding conflict.
+  \item For each pseudo-conflict, we forbid the corresponding conflict.\footnote{aka : The repaired set of plan does not have pseudo-conflict.}
 \end{itemize}
 Thanks to the pseudo-conflict, we know that no new conflict can arise. As such, we do not need to consider conflicts outside of theses.
 
-\subsection{Constraint graph}
+\subsection{Constraint graph on actions}
 Given a MAPF instance $I=(V,E,A)$.
 Given a set of shortest path\footnote{Acyclic path is enough.} $S = \{sp_a | a \in A \}$ that contain a shortest path for each agent.
 
@@ -30,13 +32,13 @@ We can represent a solution for $I$ using the set $S$ with a constraint graph $G
   \item $E_C = E_s \cup E_{C-ep} \cup E_{C-vp}$
 \end{itemize}
 The vertices of the graph represents the actions the agents have to execute.\footnote{Note that no "wait" action is present. We considers an agent may not do an action in all time-step. Not doing an action at T is equivalent with waiting at T.}
-The edges represents the constraints between the time-points of two actions. $SE$ contains the edges that represent the succession of actions for each agent. $CE$ represent the edges
+The edges represents the constraints between the time-points of two actions. $SE$ contains the edges that represent the succession of actions for each agent. $CE$ represent constraints between actions of a pseudo-conflict.
 
 \begin{itemize}
   \item For every succeeding edges $(v1,v2),(v2,v3)$ in $sp_a$, we add in $E_s$ the edge $(action(a,(v1,v2)),action(a,(v2,v3)),-1)$ is in $SE$.
-  \item For every vertex pseudo-conflict $(a_1,a_2,v)$ in $S$, we must add one of the following edge in $E_{C-vp}$:
+  \item For every vertex pseudo-conflict $(a_1,a_2,v)$ in $S$, we must add one of the following edge in $E_{C-vp}$:\comment{Add that the actions must be from those that already exist}
   \begin{itemize}
-    \item $(action(a_1,(v,v')),action(a_2,(v'',v)),0)$\comment{Add that the actions must be from thoses that allready exist}
+    \item $(action(a_1,(v,v')),action(a_2,(v'',v)),0)$
     \item $(action(a_2,(v,v')),action(a_1,(v'',v)),0)$
   \end{itemize}
   \item For every edge pseudo-conflict $(a_1,a_2,v,v')$ in $S$, we must add one of the following edge in $E_{C-ep}$:
@@ -46,4 +48,4 @@ The edges represents the constraints between the time-points of two actions. $SE
   \end{itemize}
 \end{itemize}
 
-From this given
+From this given \comment{TODO : getting the stroll}
