@@ -1,0 +1,70 @@
+\section{Jiří's approach}
+
+\subsection{Preliminaries}
+
+\iffalse
+* A graph <V,E>
+* A set of agent A, defined by a starting position and an ending position in V.
+* A shortest path is an acyclic path that start in the starting position of an agent and end in the ending position of the same agent.
+- A solution is a plan, aka a set of tuple <A,T> where A is an action (referencing the agent and the movement) and T the time-point at which the action is executed.
+- A solution is a valid solution if there is no conflicts and the execution of the actions at the related time-points lead to a correct last state.
+  - A conflicts is either a edge conflicts or a vertex conflict.
+  - An edge conflict is a pair of actions <<A_1,E1>,T>,<<A_2,E2>,T> such that E1=-E2.
+  - A vertex conflict is complex.
+- (note: waits are not represented as a tuple in the plan)
+- A solution follow the shortest paths if all actions in the plan are referencing a movement of the same agent, and vice-versa.
+- If a solution follow the shortest paths, it leads to the correct last state. As such, it just need no be free of conflicts to be valid.
+\fi
+
+\subsection{Agent's ordering}
+
+\iffalse
+Given a total ordering of the agent, given two agents $a_1$ and $a_2$ such that $a_1<a_2$, then for all tuple $\langle (a1,m1),t1 \rangle$ and all tuple <ac2,t2> referencing a_2: t1<t2.*
+
+To assure vertice conflict, we have to observe the starting position and ending positions.
+- Given two agent a1 and a2, if the starting position of a1 is in the shortest path of a2, then a1<a2.
+- Given two agent a1 and a2, if the end position of a1 is in the shortest path of a2, then a1>a2.
+
+Two different agents cannot do actions at the same time, so there is no edge conflict.
+
+The final plan given by this approach is very unoptimized, because every parallel actions have been forbidden.
+Also, of course, this is not complete.
+\fi
+
+\subsection{Partial ordering}
+
+\iffalse
+We can improve the approach by using a partial ordering instead of a total one.
+
+To ensure that the possible parallels actions doesn't collide, we can add another constraint:
+* If a vertice is in the shortest paths of two agents a1 and a2, a1>a2 or a1<a2.
+
+This way, agents that doesn't share vertices doesn't need to wait for one-another.
+
+Two differents agent that share an edge cannot do actions at the same time, so there is no edge conflict.
+\fi
+
+\subsection{Cycle solving}
+
+\iffalse
+Using the previous approach, we represent the ordering of the agents with a wait-for graph.
+
+If a cycle is detected in this graph, we can look for a point to wait. One agent does the first part of his plan, then wait for all of the second agent, then finish his plan.
+
+Otherwise, we look for a detour.
+
+Otherwise we are screwed.
+\fi
+
+\subsection{My formalization of it}
+
+\iffalse
+Every shortest paths can be divided in sub-paths as follow:
+* Every sub-path must be a path. This mean a sub path only contains succesives edges.
+* All edges from the shortest path of an agent must be in one and only one sub-path of this agent.
+
+From this, we can use the wait-for graph on the sub-paths.
+
+We need to check starting and ending points of
+
+\fi
