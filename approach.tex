@@ -31,7 +31,7 @@ We can represent a solution for $I$ using the set $S$ with a constraint graph $G
   \item $V_C = \{(a,e) | sp_a \in S, e \in sp_a \}$
   \item $E_C = E_s \cup E_{ec} \cup E_{vc}$
 \end{itemize}
-The vertices of the graph represents the actions the agents have to execute.\footnote{Note that no "wait" action is present. We considers an agent may not do an action in all time-step. Not doing an action at T is equivalent with waiting at T.}
+The vertices of the graph represents the actions the agents have to execute.
 The edges represents the constraints between the time-points of two actions. $E_s$ contains the edges that represent the succession of actions for each agent. $E_{ec}$ and $E_{vc}$ represent constraints between actions of a pseudo-conflict.
 
 \begin{itemize}
@@ -48,4 +48,4 @@ The edges represents the constraints between the time-points of two actions. $E_
   \end{itemize}
 \end{itemize}
 
-A solution of the mapf instance is obtained from a solution of \comment{TODO : getting the stroll}
+A solution of the mapf instance is obtained from a solution of the graph as follow \comment{TODO : getting the stroll}

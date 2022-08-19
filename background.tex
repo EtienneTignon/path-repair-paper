@@ -3,12 +3,14 @@
 Given a set of shortest path, we can define all visits of agents on each vertex.
 
 \begin{itemize}
-  \item If $v \in \pi_i$ and $v \in \pi_j$, then $v_{pi_i} < v_{pi_j}$ or $v_{pi_i} > v_{pi_j}$.
+  \item If $v \in \pi_i$ and $v \in \pi_j$, then $v_{pi_i}<v_{pi_j}$ or $v_{pi_i}>v_{pi_j}$.
   \\ This forbid vertex conflicts.
   \item If $(v,v') \in \pi_i$ and $(v,v') \in \pi_j$ and $v_{pi_i} < v_{pi_j}$, then $v_{pi_i} < v_{pi_j}$. \\ This ensure that, if one agent follow another, he can't pass it.
-  \item If $(v,v') \in \pi_i$ and $(v',v) \in \pi_j$ and $v_{pi_i} < v_{pi_j}$, then $v_{pi_i} < v_{pi_j}$ \\ This forbid vertex conflicts.
-  \item If $\pi_i(0)=v$ and $v \in \pi_j$, then $v_{pi_i} < v_{pi_j}$.
-  \item If $\pi_i(|\pi_i|-1)=v$ and $v \in \pi_j$, then $v_{pi_i} > v_{pi_j}$.
+  \item If $(v,v') \in \pi_i$ and $(v',v) \in \pi_j$ and $v_{pi_i} < v_{pi_j}$, then $v_{pi_i} < v_{pi_j}$ \\ This forbid edge conflicts.
+  \item If $\pi_i(0)=v$ and $v \in \pi_j$, then $v_{pi_i} < v_{pi_j}$. \\ This ensure that an agent must leave his starting position for every other agent to pass on it.
+  \item If $\pi_i(|\pi_i|-1)=v$ and $v \in \pi_j$, then $v_{pi_i} > v_{pi_j}$. \\ This ensure that an agent must reach his goal after every other agent passed on it.
 \end{itemize}
 
 This ordering can be represented as a disconnected waiting graph.
+
+Note: in the "conflict-free-routing" repository, this is how the acyclicity checker works.
