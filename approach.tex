@@ -18,7 +18,7 @@ If two plans have a conflict, their respective paths have the corresponding pseu
 Given a set of plans, we can define a "repaired set of plan" as follow:
 \begin{itemize}
   \item The repaired set of plan does not have pseudo-conflict not present in the original set.\footnote{Before I forgot: if I forbid vertex pseudo-conflict, the other one may be avoided as well.}
-  \item For each pseudo-conflict, we forbid the corresponding conflict.\footnote{aka : The repaired set of plan does not have pseudo-conflict.}
+  \item For each pseudo-conflict, we forbid the corresponding conflict.
 \end{itemize}
 Thanks to the pseudo-conflict, we know that no new conflict can arise. As such, we do not need to consider conflicts outside of theses.
 
@@ -28,24 +28,24 @@ Given a set of shortest path\footnote{Acyclic path is enough.} $S = \{sp_a | a \
 
 We can represent a solution for $I$ using the set $S$ with a constraint graph $G_C=(V_C,E_C).$
 \begin{itemize}
-  \item $V_C = \{action(a,e) | sp_a \in S, e \in sp_a \}$
-  \item $E_C = E_s \cup E_{C-ep} \cup E_{C-vp}$
+  \item $V_C = \{(a,e) | sp_a \in S, e \in sp_a \}$
+  \item $E_C = E_s \cup E_{ec} \cup E_{vc}$
 \end{itemize}
 The vertices of the graph represents the actions the agents have to execute.\footnote{Note that no "wait" action is present. We considers an agent may not do an action in all time-step. Not doing an action at T is equivalent with waiting at T.}
-The edges represents the constraints between the time-points of two actions. $SE$ contains the edges that represent the succession of actions for each agent. $CE$ represent constraints between actions of a pseudo-conflict.
+The edges represents the constraints between the time-points of two actions. $E_s$ contains the edges that represent the succession of actions for each agent. $E_{ec}$ and $E_{vc}$ represent constraints between actions of a pseudo-conflict.
 
 \begin{itemize}
-  \item For every succeeding edges $(v1,v2),(v2,v3)$ in $sp_a$, we add in $E_s$ the edge $(action(a,(v1,v2)),action(a,(v2,v3)),-1)$ is in $SE$.
-  \item For every vertex pseudo-conflict $(a_1,a_2,v)$ in $S$, we must add one of the following edge in $E_{C-vp}$:\comment{Add that the actions must be from those that already exist}
+  \item For every succeeding edges $(v1,v2),(v2,v3)$ in $sp_a$, we add in $E_s$ the edge $((a,(v1,v2)),(a,(v2,v3)),-1)$ is in $SE$.
+  \item For every vertex pseudo-conflict $(a_1,a_2,v)$ in $S$, we must add one of the following edge in $E_{vc}$:\comment{Add that the actions must be from those that already exist. If none of the two can be added, there is no solution.}
   \begin{itemize}
-    \item $(action(a_1,(v,v')),action(a_2,(v'',v)),0)$
-    \item $(action(a_2,(v,v')),action(a_1,(v'',v)),0)$
+    \item $((a_1,(v,v')),(a_2,(v'',v)),0)$
+    \item $((a_2,(v,v')),(a_1,(v'',v)),0)$
   \end{itemize}
-  \item For every edge pseudo-conflict $(a_1,a_2,v,v')$ in $S$, we must add one of the following edge in $E_{C-ep}$:
+  \item For every edge pseudo-conflict $(a_1,a_2,v,v')$ in $S$, we must add one of the following edge in $E_{ec}$:
   \begin{itemize}
-    \item $(action(a_1,(v,v')),action(a_2,(v',v)),-1)$
-    \item $(action(a_2,(v',v)),action(a_1,(v,v')),-1)$
+    \item $((a_1,(v,v')),(a_2,(v',v)),-1)$
+    \item $((a_2,(v',v)),(a_1,(v,v')),-1)$
   \end{itemize}
 \end{itemize}
 
-From this given \comment{TODO : getting the stroll}
+A solution of the mapf instance is obtained from a solution of \comment{TODO : getting the stroll}
