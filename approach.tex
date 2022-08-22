@@ -22,30 +22,39 @@ Given a set of plans, we can define a "repaired set of plan" as follow:
 \end{itemize}
 Thanks to the pseudo-conflict, we know that no new conflict can arise. As such, we do not need to consider conflicts outside of theses.
 
-\subsection{Constraint graph on actions}
+\subsection{Constraint satisfaction on actions}
 Given a MAPF instance $I=(V,E,A)$.
 Given a set of shortest path\footnote{Acyclic path is enough.} $S = \{sp_a | a \in A \}$ that contain a shortest path for each agent.
 
-We can represent a solution for $I$ using the set $S$ with a constraint graph $G_C=(V_C,E_C).$
+We can represent a solution for $I$ using the set $S$ with a CSP $\langle X,C \rangle.$
 \begin{itemize}
-  \item $V_C = \{(a,e) | sp_a \in S, e \in sp_a \}$
-  \item $E_C = E_s \cup E_{ec} \cup E_{vc}$
+  \item $X = \{(a,e) | sp_a \in S, e \in sp_a \}$ is the set of variables
+  \item $C = E_s \cup E_{ec} \cup E_{vc}$ is the set of constraints
 \end{itemize}
-The vertices of the graph represents the actions the agents have to execute.
-The edges represents the constraints between the time-points of two actions. $E_s$ contains the edges that represent the succession of actions for each agent. $E_{ec}$ and $E_{vc}$ represent constraints between actions of a pseudo-conflict.
+The domain of every variable is $ {\displaystyle \mathbb {N} }$.
+The variables represents the actions the agents have to execute.
+The constraints in $E_s$ represent the succession of actions for each agent. Those in $E_{ec}$ and $E_{vc}$ represent constraints between actions of a pseudo-conflict.
 
 \begin{itemize}
-  \item For every succeeding edges $(v1,v2),(v2,v3)$ in $sp_a$, we add in $E_s$ the edge $((a,(v1,v2)),(a,(v2,v3)),-1)$ is in $SE$.
-  \item For every vertex pseudo-conflict $(a_1,a_2,v)$ in $S$, we must add one of the following edge in $E_{vc}$:\comment{Add that the actions must be from those that already exist. If none of the two can be added, there is no solution.}
+  \item For every succeeding edges $(v1,v2),(v2,v3)$ in $sp_a$:
   \begin{itemize}
-    \item $((a_1,(v,v')),(a_2,(v'',v)),0)$
-    \item $((a_2,(v,v')),(a_1,(v'',v)),0)$
+    \item $(a,(v2,v3)) - (a,(v1,v2)) \leq -1$ is in $E_s$.
   \end{itemize}
-  \item For every edge pseudo-conflict $(a_1,a_2,v,v')$ in $S$, we must add one of the following edge in $E_{ec}$:
+  \item For every vertex pseudo-conflict $(a_1,a_2,v)$ in $S$, we must add one of the following constraints in $E_{vc}$:\comment{Add that the actions must be from those that already exist. If none of the two can be added, there is no solution to the mapf instance using those shortest paths.}
   \begin{itemize}
-    \item $((a_1,(v,v')),(a_2,(v',v)),-1)$
-    \item $((a_2,(v',v)),(a_1,(v,v')),-1)$
+    \item $(a_2,(v'',v)) - (a_1,(v,v')) \leq 0$
+    \item $(a_1,(v'',v)) - (a_2,(v,v')) \leq 0$
+  \end{itemize}
+  \item For every edge pseudo-conflict $(a_1,a_2,v,v')$ in $S$, we must add one of the following constraints in $E_{ec}$:
+  \begin{itemize}
+    \item $(a_2,(v',v)) - (a_1,(v,v')) \leq -1$
+    \item $(a_1,(v,v')) - (a_2,(v',v)) \leq -1$
   \end{itemize}
 \end{itemize}
 
-A solution of the mapf instance is obtained from a solution of the graph as follow \comment{TODO : getting the stroll}
+A solution of the mapf instance is obtained from a solution of the CSP:
+\begin{itemize}
+  \item For each variable $(a_i,(v_j,v_k)) \in X$, $X=t \rightarrow \pi_{a_i}[t]=(v_j,v_k)$
+  \item The rest of $\pi_{a_i}$ is filled with waits \comment{TODO: formalisation}
+\end{itemize}
+\comment{TODO : getting the stroll}
