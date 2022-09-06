@@ -3,6 +3,7 @@
 Given a set of shortest path, we can define all visits of agents on each vertex.
 
 \begin{itemize}
+  \item If $v = sp_i(k)$ and $v' = sp_i(k+1)$ for some $k \in 0..|sp_i|$, then $v_{pi_i}<v'_{pi_i}$.
   \item If $v \in sp_i$ and $v \in sp_j$, then $v_{pi_i}<v_{pi_j}$ or $v_{pi_i}>v_{pi_j}$.
   \\ This forbid vertex conflicts.
   \item If $(v,v') \in sp_i$ and $(v,v') \in sp_j$ and $v_{pi_i} < v_{pi_j}$, then $v_{pi_i} < v_{pi_j}$. \\ This ensure that, if one agent follow another, he can't pass it.
