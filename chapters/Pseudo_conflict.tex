@@ -54,7 +54,8 @@ The constraints in $E_s$ represent the succession of actions for each agent. Tho
 
 A solution of the mapf instance is obtained from a solution of the CSP:
 \begin{itemize}
-  \item For each variable $(a_i,(v_j,v_k)) \in X$, $X=t \rightarrow \pi_{a_i}[t]=(v_j,v_k)$
-  \item The rest of $\pi_{a_i}$ is filled with waits \comment{TODO: formalisation}
+  \item For all agent, $\pi_{a_i}(0)=s$ with $a=(s,g)$.
+  \item For each variable $(a_i,(v_j,v_k)) \in X$, $X=t \rightarrow \pi_{a_i}(t)=v_k$
+  \item $\forall n \in (1..max(X)): ( \neg\exists (a,e) \in X, (a,e)=n ) \rightarrow \pi_{a_i}(n)=\pi_{a_i}(n-1)$
 \end{itemize}
 \comment{TODO : getting the stroll}
