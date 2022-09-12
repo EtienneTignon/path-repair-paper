@@ -1,17 +1,45 @@
 \section{Vertex ordering}\label{sec:vo}
 
-Given a set of shortest path, we can define all visits of agents on each vertex.
+Given a set of shortest path $sp_a$, we can define all visits of agents $a\in A$ on each vertex.
 
-\begin{itemize}
-  \item If $v = sp_i(k)$ and $v' = sp_i(k+1)$ for some $k \in 0..|sp_i|$, then $v_{pi_i}<v'_{pi_i}$.
-  \item If $v \in sp_i$ and $v \in sp_j$, then $v_{pi_i}<v_{pi_j}$ or $v_{pi_i}>v_{pi_j}$.
-  \\ This forbid vertex conflicts.
-  \item If $(v,v') \in sp_i$ and $(v,v') \in sp_j$ and $v_{pi_i} < v_{pi_j}$, then $v_{pi_i} < v_{pi_j}$. \\ This ensure that, if one agent follow another, he can't pass it.
-  \item If $(v,v') \in sp_i$ and $(v',v) \in sp_j$ and $v_{pi_i} < v_{pi_j}$, then $v_{pi_i} < v_{pi_j}$ \\ This forbid edge conflicts.
-  \item If $sp_i(0)=v$ and $v \in sp_j$, then $v_{pi_i} < v_{pi_j}$. \\ This ensure that an agent must leave his starting position for every other agent to pass on it.
-  \item If $sp_i(|sp_i|-1)=v$ and $v \in sp_j$, then $v_{pi_i} > v_{pi_j}$. \\ This ensure that an agent must reach his goal after every other agent passed on it.
-\end{itemize}
+\begin{enumerate}
+  \item $V = \{v_i : v = sp_i(k), k \in 0..|sp_i|\}$
+  \item If $v = sp_i(k)$ and $v' = sp_i(k+1)$ for some $k \in 0..|sp_i|$, then $v_{i}<v'_{i}$.\label{succ}
+  \item If $v \in sp_i$ and $v \in sp_j$, then $v_{i}<v_{j}$ or $v_{i}>v_{j}$.
+  \\ This forbid vertex conflicts.\label{vercon}
+  \item If $(v,v') \in sp_i$ and $(v,v') \in sp_j$ and $v_{pi_i} < v_{pi_j}$, then $v_{pi_i} < v_{pi_j}$. \\ This ensure that, if one agent follow another, he can't pass it.\comment{ET: redudant?}
+  \item If $(v,v') \in sp_i$ and $(v',v) \in sp_j$ and $v_{i} < v_{j}$, then $v'_{i} < v'_{j}$ \\ This forbid edge conflicts.\label{edgcon}
+  \item If $sp_i(0)=v$ and $v \in sp_j$, then $v_{i} < v_{j}$. \\ This ensure that an agent must leave his starting position for every other agent to pass on it.
+  \item If $sp_i(|sp_i|-1)=v$ and $v \in sp_j$, then $v_{i} > v_{j}$. \\ This ensure that an agent must reach his goal after every other agent passed on it.
+\end{enumerate}
 
-This ordering can be represented as a disconnected waiting graph.
+This ordering can be represented as a waiting graph.
 
 Note: in the "conflict-free-routing" repository, this is how the acyclicity checker works.
+
+\subsection{Proof}
+
+We can define a plan $\Pi = \{\pi_i : i\in A\}$ from the ordering.
+
+\begin{itemize}
+  \item $\forall k\in \mathbb{N}, \pi_i(k)\in\{v:v_j\in V, j=i\}.$
+  \item $\forall v_i\in V, \exists k \in \mathbb{N}, \pi_i(k)=v_i$.
+  \item If $v_{i}<v'_{j}$ then $\forall k,k'\in \mathbb{N} : (\pi_{i}(k)=v, \pi_{j}(k')=v') \rightarrow k<k'$.
+\end{itemize}
+\begin{proof}
+$\Pi$ is a valid non-conflicting plans.
+
+\begin{itemize}
+  \item Using \ref{succ}, we can affirn that $\pi$ define a stroll. \comment{TODO: formalize}
+  \item Using \ref{vercon}, we can affirm that $\forall k\in \mathbb{N}, \pi_i(k) \not= \pi_j(k)$
+  \item For the edge constraints.
+  \begin{itemize}
+    \item Let's assume we have an edge constraint : $\exists c, \pi_i(c)=v, \pi_i(c+1)=v',\pi_j(c)=v', \pi_i(c+1)=v$
+    \item $\pi_i(c)=v, \pi_i(c+1)=v' \rightarrow (v,v') \in sp_i$
+    \item $\pi_j(c)=v', \pi_j(c+1)=v \rightarrow (v',v) \in sp_j$
+    \item Using \ref{vercon}, $v_i < v_j$ and $v'_i > v'_j$
+    \item But this contradict \ref{edgcon}.
+  \end{itemize}
+\end{itemize}
+
+\end{proof}

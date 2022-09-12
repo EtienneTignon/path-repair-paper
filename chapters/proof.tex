@@ -11,7 +11,11 @@ A solution of $\langle X,C \rangle$ can be translated into a plan $\Pi = \{\pi_a
     For all agent $a$, $\pi_a$ is a walk of $a$ in $I$.
   \end{lemma}
   \begin{proof}
-    Trust me bro.
+    \begin{enumerate}
+      \item From the translation, we can affirm that for all $n \in (1..max(X))$, $\pi_a(n)$ has a value.
+      \item Thanks to the constraints in $E_s$, we can affirm that no two actions of the same agent can happen at the same timepoint. As such, for all $n \in (1..max(X))$, $\pi_a(n)$ has only one value.
+      \item Thanks to the constraints in $E_s$, every time an action occures, we can affirm that
+    \end{enumerate}
   \end{proof}
   \begin{lemma}
     There is no edge conflict in $\Pi$.

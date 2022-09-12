@@ -38,7 +38,7 @@ The constraints in $E_s$ represent the succession of actions for each agent. Tho
 \begin{itemize}
   \item For every succeeding edges $(v1,v2),(v2,v3)$ in $sp_a$:
   \begin{itemize}
-    \item $(a,(v2,v3)) - (a,(v1,v2)) \leq -1$ is in $E_s$.
+    \item $(a,(v2,v3)) - (a,(v1,v2)) \leq -1$ is in $E_s$. \comment{TODO : check the order  !!!!!!!!!!!!!!!!!!!!!!!!!!}
   \end{itemize}
   \item For every vertex pseudo-conflict $(a_1,a_2,v)$ in $S$, we must add one of the following constraints in $E_{vc}$:\comment{Add that the actions must be from those that already exist. If none of the two can be added, there is no solution to the mapf instance using those shortest paths.}
   \begin{itemize}
@@ -53,9 +53,8 @@ The constraints in $E_s$ represent the succession of actions for each agent. Tho
 \end{itemize}
 
 A solution of the mapf instance is obtained from a solution of the CSP:
-\begin{itemize}
+\begin{enumerate}
   \item For all agent, $\pi_{a_i}(0)=s$ with $a=(s,g)$.
-  \item For each variable $(a_i,(v_j,v_k)) \in X$, $X=t \rightarrow \pi_{a_i}(t)=v_k$
+  \item For each variable $(a_i,(v_j,v_k)) \in X$, $(a_i,(v_j,v_k))=t \rightarrow \pi_{a_i}(t)=v_k$
   \item $\forall n \in (1..max(X)): ( \neg\exists (a,e) \in X, (a,e)=n ) \rightarrow \pi_{a_i}(n)=\pi_{a_i}(n-1)$
-\end{itemize}
-\comment{TODO : getting the stroll}
+\end{enumerate}
