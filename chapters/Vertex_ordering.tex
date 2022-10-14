@@ -1,43 +1,70 @@
 \section{Vertex ordering}\label{sec:vo}
 
-Given a set of shortest path $sp_a$, we can define all visits of agents $a\in A$ on each vertex.
+\subsection{Poset}
+
+Given a graph {V,E} and a set of agent {A}.
+
+We define a shortest path as a set of edges. 
+$start(sp)$ and $end(sp)$ respesent the start and the end of the shortest path $sp$.
+
+Given a set of shortest path, we can define an partially strictly ordered set $\{S,<\}$
+containing all visits of agents $a \in A$ on each vertex.
 
 \begin{enumerate}
-  \item $V = \{v_i : v = sp_i(k), k \in 0..|sp_i|\}$
-  \item If $v = sp_i(k)$ and $v' = sp_i(k+1)$ for some $k \in 0..|sp_i|$, then $v_{i}<v'_{i}$.\label{succ}
-  \item If $v \in sp_i$ and $v \in sp_j$, then $v_{i}<v_{j}$ or $v_{i}>v_{j}$.
+  \item $S = \{(v,a) : a \in A, (v,v') \in sp_a\} \cup \{(v,a) : a \in A, v=start(sp_a)\}$
+  \\ $(v,a)$ represent the passage of the agent $a$ on the vertex $v$.
+  \item If $(v,v') \in sp_a$, then $(v,a)<(v',a)$.\label{succ}
+  \item If $v \in sp_a$ and $v \in sp_{a'}$, then $(v,a)<(v,a')$ or $(v,a')<(v,a)$.
   \\ This forbid vertex conflicts.\label{vercon}
-  \item If $(v,v') \in sp_i$ and $(v,v') \in sp_j$ and $v_{pi_i} < v_{pi_j}$, then $v_{pi_i} < v_{pi_j}$. \\ This ensure that, if one agent follow another, he can't pass it.\comment{ET: redudant?}
-  \item If $(v,v') \in sp_i$ and $(v',v) \in sp_j$ and $v_{i} < v_{j}$, then $v'_{i} < v'_{j}$ \\ This forbid edge conflicts.\label{edgcon}
-  \item If $sp_i(0)=v$ and $v \in sp_j$, then $v_{i} < v_{j}$. \\ This ensure that an agent must leave his starting position for every other agent to pass on it.
-  \item If $sp_i(|sp_i|-1)=v$ and $v \in sp_j$, then $v_{i} > v_{j}$. \\ This ensure that an agent must reach his goal after every other agent passed on it.
+  \item If $(v,v') \in sp_a$ and $(v,v') \in sp_{a'}$ and $(v,a)<(v,a')$, then $(v',a)<(v',a')$.
+  \\ This ensure that, if one agent follow another, he can't pass it.
+  \item If $(v,v') \in sp_a$ and $(v',v) \in sp_{a'}$ and $(v,a)<(v,a')$, then $(v',a)<(v',a')$
+  \\ This forbid edge conflicts.\label{edgcon}
+  \item If $start(sp_a)=v$ and $v \in sp_{a'}$, then $(v,a)<(v,a')$.
+  \\ This ensure that an agent must leave his starting position for every other agent to pass on it.
+  \item If $end(sp_a)=v$ and $v \in sp_{a'}$, then $(v,a')<(v,a)$.
+  \\ This ensure that an agent must reach his goal after every other agent passed on it.
+  \\ This can be removed if the agent disapear after reaching his target.
 \end{enumerate}
+
+Note that a partially strictly ordered set must satisfy irreflexivity and transitivity.
+
+The set $\{S,<\}$ is a correct ordering of the shortest paths.
+If no correct ordering exists, the shortests paths are unrepairable with only waits.
+
+Note that there may be redundant rules.
 
 This ordering can be represented as a waiting graph.
 
-Note: in the "conflict-free-routing" repository, this is how the acyclicity checker works.
+\subsection{Plan}
+
+We can define a plan $\Pi = \{\pi_a : a\in A\}$ from the ordered set $\{S,<\}$.
+
+\begin{itemize}
+  \item For all $k\in \mathbb{N}, \pi_a(k)\in\{v:(v,a)\in S\}$.
+  \item For all $(v,a)\in S,$ there is a $k \in \mathbb{N}$ such as $\pi_a(k)=(v,a)$.
+  \item If $(v,a)<(v',a')$ then for all $k,k'\in \mathbb{N} : (\pi_{a}(k)=v, \pi_{a'}(k')=v') \rightarrow k<k'$.
+\end{itemize}
 
 \subsection{Proof}
 
-We can define a plan $\Pi = \{\pi_i : i\in A\}$ from the ordering.
-
-\begin{itemize}
-  \item $\forall k\in \mathbb{N}, \pi_i(k)\in\{v:v_j\in V, j=i\}.$
-  \item $\forall v_i\in V, \exists k \in \mathbb{N}, \pi_i(k)=v_i$.
-  \item If $v_{i}<v'_{j}$ then $\forall k,k'\in \mathbb{N} : (\pi_{i}(k)=v, \pi_{j}(k')=v') \rightarrow k<k'$.
-\end{itemize}
 \begin{proof}
 $\Pi$ is a valid non-conflicting plans.
 
 \begin{itemize}
-  \item Using \ref{succ}, we can affirn that $\pi$ define a stroll. \comment{TODO: formalize}
+  \item Using \ref{succ}, we can affirm that $\pi$ define a stroll. \comment{TODO: formalize}
   \item Using \ref{vercon}, we can affirm that $\forall k\in \mathbb{N}, \pi_i(k) \not= \pi_j(k)$
   \item For the edge constraints.
   \begin{itemize}
-    \item Let's assume we have an edge constraint : $\exists c, \pi_i(c)=v, \pi_i(c+1)=v',\pi_j(c)=v', \pi_i(c+1)=v$
-    \item $\pi_i(c)=v, \pi_i(c+1)=v' \rightarrow (v,v') \in sp_i$
-    \item $\pi_j(c)=v', \pi_j(c+1)=v \rightarrow (v',v) \in sp_j$
-    \item Using \ref{vercon}, $v_i < v_j$ and $v'_i > v'_j$
+    \item Let's assume we have an edge constraint :
+    \begin{itemize}
+      \item $\exists c, \pi_i(c)=v, \pi_i(c+1)=v',\pi_j(c)=v', \pi_i(c+1)=v$
+      \item $(v,v') \in sp_i$
+      \item $(v',v) \in sp_j$
+    \end{itemize}
+    \item $(v,v') \in sp_i \rightarrow v_i < v'_i$
+    \item $(v',v) \in sp_j \rightarrow v'_j < v_j$
+    \item Using \ref{vercon}, $v_i < v_j$ and $v'_j < v'_i$
     \item But this contradict \ref{edgcon}.
   \end{itemize}
 \end{itemize}
