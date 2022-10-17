@@ -1,35 +1,58 @@
 \section{Vertex ordering}\label{sec:vo}
 
+\subsection{Shortest Path}
+
+\begin{definition}
+  Given a graph $G=\langle V,E \rangle$ and a pair of vertex $(u,u')$,
+  a walk $w$ of $(u,u')$ over $G$ is a sequence \((v_i)_{i=0}^{n}\) of vertices such that
+  \begin{itemize}
+  \item for all $i \in \{0,...,n\}, v_i \in V$,
+  \item for all $i \in \{0,...,n-1\}, (v_i,v_{i+1}) \in E$ or $v_i=v_{i+1}$,
+  \item $v_0 = u$ and $v_n=u'$.
+  \end{itemize}
+  $n$ is the lengh of the walk.
+\end{definition}
+% \begin{definition}  Given a graph $G=\langle V,E \rangle$ and a pair of vertex $(u,u')$,  a path $p$ of $(u,u')$ over $G$ is a walk such such that   for all $i \in \{0,...,n-1\}, (v_i,v_{i+1}) \in E$.  $n$ is the lengh of the path.\end{definition}
+\begin{definition}
+For a walk $p=((v_i)_{i=0}^{n})$ over $\langle V,E \rangle$ and a vertex $v \in V$,
+$v \in p$ if there is an $i\in \{0,...,n\}$ such that $v=v_i$.
+\end{definition}
+\begin{definition}
+For a walk $p=((v_i)_{i=0}^{n})$ over $\langle V,E \rangle$ and an edge $(v,v') \in E$,
+$(v,v') \in p$ if there is an $i\in \{0,...,n-1\}$ such that $v=v_i$ and $v'=v_{i+1}$.
+\end{definition}
+\begin{definition}
+  Given a graph $G$ and a pair of vertex $(u,u')$,
+  a shortest path $sp$ is a walk of $(u,u')$ over $G$ such that,
+  for every walk $p'$ of $(u,u')$ over $G$,
+  the lengh of $p'$ is bigger or equal than the lengh of $sp$.
+\end{definition}
+
 \subsection{Poset}
 
-Given a graph $\langle V,E \rangle$ and a set of agent $A$.
+Given a graph $G=\langle V,E \rangle$,
+an agent is a pair of vertex $(u,v) \in {V\times V}$.
 
-Every agent $a \in A$ is mapped to a shortest path $sp(a)$.
+Given a graph $G=\langle V,E \rangle$ and a set of agent $A$,
+$sp$ is a mapping over $G$ from an agent $a$ into a shortest path of $a$ over $G$.
 
-We define a shortest path as a subset of $E$.
-$start(sp)$ and $end(sp)$ respesent the start and the end of the shortest path $sp$.
-
-Given a set of shortest path, we can define an partially strictly ordered set $\{S,<\}$
-containing all visits of agents $a \in A$ on each vertex.
+Given the tuple $\langle G,A,sp \rangle$,
+we can define an partially strictly ordered set $\{S,<\}$ over the tuple as follow:
 
 \begin{enumerate}
-  \item $S = \{(v,a) : a \in A, (u,v) \in sp(a)\} \cup \{(start(sp(a)),a)\}$
+  \item $S = \{(v,a) : a \in A, v \in sp(a)\}$
   \\ $(v,a)$ represent the passage of the agent $a$ on the vertex $v$.
-  \item If $(v,v') \in sp(a)$, then $(v,a)<(v',a)$.\label{succ}
-  \item For every vertex $v \in V$, if
-  \begin{itemize}
-    \item there is a edge $(u,v) \in sp(a)$, or if $start(sp(a))=v$ and
-    \item there is a edge $(u,v) \in sp(a')$, or if $start(sp(a'))=v$
-  \end{itemize}
+  \item For every edge $(v,v') \in E$, if $(v,v') \in sp(a)$, $(v,a)<(v',a)$.\label{succ}
+  \item For every vertex $v \in V$, if $v \in sp(a)$ and $v \in sp(a')$
   then $(v,a)<(v,a')$ or $(v,a')<(v,a)$.
   \\ This forbid vertex conflicts.\label{vercon}
-  \item If $(v,v') \in sp(a)$ and $(v,v') \in sp_{a'}$ and $(v,a)<(v,a')$, then $(v',a)<(v',a')$.
+  \item For every edge $(v,v') \in E$, if $(v,v') \in sp(a)$ and $(v,v') \in sp(a')$ and $(v,a)<(v,a')$, then $(v',a)<(v',a')$.
   \\ This ensure that, if one agent follow another, he can't pass it.
-  \item If $(v,v') \in sp(a)$ and $(v',v) \in sp_{a'}$ and $(v,a)<(v,a')$, then $(v',a)<(v',a')$
+  \item For every edge $(v,v') \in E$, if $(v,v') \in sp(a)$ and $(v',v) \in sp(a')$ and $(v,a)<(v,a')$, then $(v',a)<(v',a')$
   \\ This forbid edge conflicts.\label{edgcon}
-  \item If $start(sp(a))=v$ and $v \in sp_{a'}$, then $(v,a)<(v,a')$.
+  \item For $a=(u,v)$, for all $a'\in A$, if $u \in sp(a')$, then $(u,a)<(u,a')$.
   \\ This ensure that an agent must leave his starting position for every other agent to pass on it.
-  \item If $end(sp(a))=v$ and $v \in sp_{a'}$, then $(v,a')<(v,a)$.
+  \item For $a=(u,v)$, for all $a'\in A$, if $v \in sp(a')$, then $(v,a')<(v,a)$.
   \\ This ensure that an agent must reach his goal after every other agent passed on it.
   \\ This can be removed if the agent disapear after reaching his target.
 \end{enumerate}
@@ -41,31 +64,39 @@ If no correct ordering exists, the shortests paths are unrepairable with only wa
 
 Note that there may be redundant rules.
 
-This ordering can be represented as a waiting graph.
+\subsection{Repair}
 
-\subsection{Plan}
-
-We can define a plan $\Pi = \{\pi_a : a\in A\}$ from the ordered set $\{S,<\}$.
-
+A repair $\pi$ is a mapping from a shortest path \((p_i)_{i=0}^{n}\) into a walk \((w_i)_{i=0}^{m}\) such that:
 \begin{itemize}
-  \item For all $k\in \mathbb{N}, \pi_a(k)\in\{v:(v,a)\in S\}$.
-  \item For all $(v,a)\in S,$ there is a $k \in \mathbb{N}$ such as $\pi_a(k)=(v,a)$.
-  \item If $(v,a)<(v',a')$ then for all $k,k'\in \mathbb{N} : (\pi_{a}(k)=v, \pi_{a'}(k')=v') \rightarrow k<k'$.
+  \item for all $i \in \{0,...,n\}$, there is a $j \in \{0,...,m\}$ such that $p_i=w_j$
+  \item for all $j \in \{0,...,m\}$, there is an $i \in \{0,...,n\}$ such that $p_i=w_j$
+  \item for all $i,i' \in \{0,...,n\}$ with $i<i'$, and all $j,j' \in \{0,...,m\}$
+  such that $p_i=w_j$ and $p_{i'}=w_{j'}$, $j<j'$
 \end{itemize}
+
+Given the tuple $\langle G,A,sp \rangle$, an ordered set $\{S,<\}$ over this tuple and a repair $\pi$,
+we can define a set of walks $\Pi = \{((\pi(sp(a))_i)_{i=0}^{n}) : a\in A\}$ such that:
+\begin{itemize}
+  \item All walks in $\Pi$ have the same lengh $n$.
+%  \item For all $k\in \{0,...,n\}$, for all $\pi \in \Pi$, $v^a_k\in\{v:(v,a)\in S\}$.
+%  \item For all $(v,a)\in S,$ there is a $k \in \mathbb{N}$ such that $\pi(a)(k)=(v,a)$.
+  \item If $(v,a)<(v',a')$ then for all $k\in \{0,...,n\}$ such that $\pi(sp(a))_k=v$
+  and all $k'\in \{0,...,n\}$ such that $\pi(sp(a'))_{k'}=v'$, $ k<k'$.
+\end{itemize}
+
+Claim : $\Pi$ is a non-conflicting set of walks.
 
 \subsection{Proof}
 
 \begin{proof}
-$\Pi$ is a valid non-conflicting plans.
-
 \begin{itemize}
-  \item Using \ref{succ}, we can affirm that $\pi$ define a stroll. \comment{TODO: formalize}
-  \item Using \ref{vercon}, we can affirm that $\forall k\in \mathbb{N}, \pi_i(k) \not= \pi_j(k)$
+  %\item Using \ref{succ}, we can affirm that all $\pi \in \Pi$ are a walk.\comment{define walks}
+  \item Using \ref{vercon}, we can affirm that For all $k\in \mathbb{N}, \pi_i(k) \not= \pi_j(k)$
   \item For the edge constraints.
   \begin{itemize}
     \item Let's assume we have an edge constraint :
     \begin{itemize}
-      \item $\exists c, \pi_i(c)=v, \pi_i(c+1)=v',\pi_j(c)=v', \pi_i(c+1)=v$
+      \item There is a c such that $\pi_i(c)=v, \pi_i(c+1)=v',\pi_j(c)=v', \pi_i(c+1)=v$
       \item $(v,v') \in sp_i$
       \item $(v',v) \in sp_j$
     \end{itemize}
