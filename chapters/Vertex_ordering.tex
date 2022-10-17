@@ -2,28 +2,34 @@
 
 \subsection{Poset}
 
-Given a graph {V,E} and a set of agent {A}.
+Given a graph $\langle V,E \rangle$ and a set of agent $A$.
 
-Every agent $a \in A$ is mapped to a shortest path $sp_a$.
-We define a shortest path as a set of edges. 
+Every agent $a \in A$ is mapped to a shortest path $sp(a)$.
+
+We define a shortest path as a subset of $E$.
 $start(sp)$ and $end(sp)$ respesent the start and the end of the shortest path $sp$.
 
 Given a set of shortest path, we can define an partially strictly ordered set $\{S,<\}$
 containing all visits of agents $a \in A$ on each vertex.
 
 \begin{enumerate}
-  \item $S = \{(v,a) : a \in A, (v,v') \in sp_a\} \cup \{(v,a) : a \in A, v=start(sp_a)\}$
+  \item $S = \{(v,a) : a \in A, (u,v) \in sp(a)\} \cup \{(start(sp(a)),a)\}$
   \\ $(v,a)$ represent the passage of the agent $a$ on the vertex $v$.
-  \item If $(v,v') \in sp_a$, then $(v,a)<(v',a)$.\label{succ}
-  \item If $v \in sp_a$ and $v \in sp_{a'}$, then $(v,a)<(v,a')$ or $(v,a')<(v,a)$.
+  \item If $(v,v') \in sp(a)$, then $(v,a)<(v',a)$.\label{succ}
+  \item For every vertex $v \in V$, if
+  \begin{itemize}
+    \item there is a edge $(u,v) \in sp(a)$, or if $start(sp(a))=v$ and
+    \item there is a edge $(u,v) \in sp(a')$, or if $start(sp(a'))=v$
+  \end{itemize}
+  then $(v,a)<(v,a')$ or $(v,a')<(v,a)$.
   \\ This forbid vertex conflicts.\label{vercon}
-  \item If $(v,v') \in sp_a$ and $(v,v') \in sp_{a'}$ and $(v,a)<(v,a')$, then $(v',a)<(v',a')$.
+  \item If $(v,v') \in sp(a)$ and $(v,v') \in sp_{a'}$ and $(v,a)<(v,a')$, then $(v',a)<(v',a')$.
   \\ This ensure that, if one agent follow another, he can't pass it.
-  \item If $(v,v') \in sp_a$ and $(v',v) \in sp_{a'}$ and $(v,a)<(v,a')$, then $(v',a)<(v',a')$
+  \item If $(v,v') \in sp(a)$ and $(v',v) \in sp_{a'}$ and $(v,a)<(v,a')$, then $(v',a)<(v',a')$
   \\ This forbid edge conflicts.\label{edgcon}
-  \item If $start(sp_a)=v$ and $v \in sp_{a'}$, then $(v,a)<(v,a')$.
+  \item If $start(sp(a))=v$ and $v \in sp_{a'}$, then $(v,a)<(v,a')$.
   \\ This ensure that an agent must leave his starting position for every other agent to pass on it.
-  \item If $end(sp_a)=v$ and $v \in sp_{a'}$, then $(v,a')<(v,a)$.
+  \item If $end(sp(a))=v$ and $v \in sp_{a'}$, then $(v,a')<(v,a)$.
   \\ This ensure that an agent must reach his goal after every other agent passed on it.
   \\ This can be removed if the agent disapear after reaching his target.
 \end{enumerate}
